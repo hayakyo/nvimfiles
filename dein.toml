@@ -1,0 +1,117 @@
+#Pluginマネージャー
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+#非同期処理を実現するためのvimのプラグイン
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+
+#vim用の高機能ファイラー
+[[plugins]]
+repo = 'Shougo/denite.nvim'
+
+#gitの制御
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+#ステータスバーの表示変更
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+
+#ステータスバーの表示テーマを設定
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+hook_add = '''
+  let g:airline#extensions#tabline#enabled = 1
+  let g:airline#extensions#tabline#buffer_idx_mode = 1
+  let g:airline_theme='papercolor' "落ち着いた色調が好き
+  let g:airline_powerline_fonts = 1 
+'''
+
+#ディレクトリをツリー表示のプラグイン
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+  nnoremap <C-n> :NERDTreeToggle<CR>
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  let g:NERDTreeShowBookmarks=1
+'''
+
+#Tag表示のプラグイン
+[[plugins]]
+repo = 'majutsushi/tagbar'
+hook_add = '''
+  nnoremap <F8> :TagbarToggle<CR>
+'''
+
+[[plugins]]  # 補完plugin (neocompleteのneovim版)
+repo = 'Shougo/deoplete.nvim'
+on_i = 1
+on_event = 'InsertCharPre'
+hook_add = '''
+  let g:deoplete#enable_at_startup = 1        "起動時に開始
+  let g:deoplete#auto_complete_delay = 0      "入力からポップアップ表示までのdealy[ms]
+  let g:deoplete#enable_smart_case = 1        "大文字小文字を区別
+  let g:deoplete#file#enable_buffer_path = 1  "バッファから読み込む?
+  " Tabで候補を選択
+  inoremap <expr><tab> pumvisible() ? "\<C-n>" :
+        \ neosnippet#expandable_or_jumpable() ?
+        \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
+'''
+
+[[plugins]]  # deopleteとneosnippetの連携
+repo = 'Shougo/neosnippet-snippets'
+
+[[plugins]]  # 定型文の補完
+repo = 'Shougo/neosnippet'
+depends = ['neosnippet-snippets', 'context_filetype.vim']
+on_event = 'InsertCharPre'
+on_ft = 'snippet'
+hook_add = '''
+  " Plugin key-mappings.
+  imap <C-k> <Plug>(neosnippet_expand_or_jump)
+  smap <C-k> <Plug>(neosnippet_expand_or_jump)
+  xmap <C-k> <Plug>(neosnippet_expand_target)
+  " SuperTab like snippets behavior.
+  imap <C-k> <Plug>(neosnippet_expand_or_jump)
+  smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+        \ "/<Plug>(neosnippet_expand_or_jump)": "\<TAB>"
+  " For conceal markers.
+  if has('conceal')
+    set conceallevel=2 concealcursor=niv
+  endif
+  " Enable snipMate compatibility feature.
+  let g:neosnippet#enable_snipmate_compativility = 1
+  " Tell Neosnippet about the other snippets
+  let g:neosnippet#snippets_directory='~/.config/nvim/snippets'
+'''
+
+[[plugins]]  # Code Checkのプラグイン
+repo = 'w0rp/ale'
+hook_add = '''
+    let g:ale_echo_msg_format = '[%linter%] %code: %%s [%severity%]'
+    let g:ale_sign_column_always = 1
+    let g:ale_lint_on_enter = 1
+    " 有効にするlinter
+    let g:ale_linters = {
+    \   'python': ['flake8'],
+    \}
+
+    " 各ツールをFixerとして登録
+    let g:ale_fixers = {
+    \ 'python': ['autopep8', 'isort'],
+    \}
+" 各ツールの実行オプションを変更してPythonパスを固定
+let g:ale_python_flake8_executable = g:python3_host_prog
+let g:ale_python_flake8_options = '-m flake8'
+let g:ale_python_autopep8_executable = g:python3_host_prog
+let g:ale_python_autopep8_options = '-m autopep8'
+let g:ale_python_isort_executable = g:python3_host_prog
+let g:ale_python_isort_options = '-m isort'
+
+" ついでにFixを実行するマッピングしとく
+nmap <silent> <Leader>x <Plug>(ale_fix)
+'''
+
+[[plugins]]
+repo = 'ayu-theme/ayu-vim'
